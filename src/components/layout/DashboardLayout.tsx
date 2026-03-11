@@ -11,7 +11,9 @@ import {
     X,
     Bell,
     Search,
-    MessageSquare
+    MessageSquare,
+    CheckCircle2,
+    FileText
 } from 'lucide-react';
 import { useState } from 'react';
 import Link from 'next/link';
@@ -22,6 +24,8 @@ const menuItems = [
     { icon: LayoutDashboard, label: 'Dashboard', href: '/dashboard', exact: true },
     { icon: Users, label: 'Clientes', href: '/dashboard/customers' },
     { icon: CreditCard, label: 'Deudas', href: '/dashboard/debts' },
+    { icon: CheckCircle2, label: 'Pagos Recibidos', href: '/dashboard/payments' },
+    { icon: FileText, label: 'Pagos Reportados', href: '/dashboard/payment-reports' },
     { icon: MessageSquare, label: 'Recordatorios', href: '/dashboard/reminders' },
     { icon: Settings, label: 'Configuración', href: '/dashboard/settings' },
 ];
