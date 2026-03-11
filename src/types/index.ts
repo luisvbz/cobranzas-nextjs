@@ -12,6 +12,15 @@ export interface Customer {
     payments?: Payment[];
 }
 
+export interface CustomerFormData {
+    name: string;
+    email?: string;
+    phone?: string;
+    document_type?: string;
+    document_number?: string;
+    notes?: string;
+}
+
 export interface Debt {
     id: number;
     customer_id: number;

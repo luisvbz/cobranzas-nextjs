@@ -32,10 +32,10 @@ export default function CustomersPage() {
                         Gestiona el directorio de clientes y sus historiales de cobranza.
                     </p>
                 </div>
-                <button className="flex items-center gap-2 rounded-xl bg-primary px-4 py-2 text-sm font-bold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:bg-primary/90">
+                <Link href="/dashboard/customers/new" className="flex items-center gap-2 rounded-xl bg-primary px-4 py-2 text-sm font-bold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:bg-primary/90">
                     <Plus className="h-4 w-4" />
                     Nuevo Cliente
-                </button>
+                </Link>
             </div>
 
             <div className="rounded-2xl border bg-card p-6 shadow-sm">
