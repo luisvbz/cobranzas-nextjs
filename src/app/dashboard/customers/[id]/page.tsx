@@ -150,17 +150,17 @@ export default function CustomerDetailPage() {
                     </p>
                 </div>
 
-                <div className="rounded-2xl border bg-card p-5 shadow-sm bg-primary/5 border-primary/20">
+                <Link href={`/dashboard/debts/new?customer_id=${customer.id}`} className="rounded-2xl border bg-card p-5 shadow-sm bg-primary/5 border-primary/20 hover:bg-primary/10 transition-colors block">
                     <div className="flex items-center justify-between h-full">
                         <div>
                             <h3 className="text-sm font-medium text-primary mb-1">Nueva Operación</h3>
                             <p className="text-xs text-muted-foreground">Registrar nuevo compromiso</p>
                         </div>
-                        <button className="h-10 w-10 flex items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm hover:bg-primary/90 transition-colors">
+                        <div className="h-10 w-10 flex items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm">
                             <span className="text-xl leading-none">+</span>
-                        </button>
+                        </div>
                     </div>
-                </div>
+                </Link>
             </div>
 
             <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
@@ -326,8 +326,8 @@ export default function CustomerDetailPage() {
                                                 </td>
                                                 <td className="px-4 py-3 text-right">
                                                     <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${payment.status === 'completed' || payment.status === 'paid' ? 'bg-emerald-100 text-emerald-800 border-emerald-200' :
-                                                            payment.status === 'pending' ? 'bg-amber-100 text-amber-800 border-amber-200' :
-                                                                'bg-destructive/10 text-destructive border-destructive/20'
+                                                        payment.status === 'pending' ? 'bg-amber-100 text-amber-800 border-amber-200' :
+                                                            'bg-destructive/10 text-destructive border-destructive/20'
                                                         }`}>
                                                         {payment.status}
                                                     </span>

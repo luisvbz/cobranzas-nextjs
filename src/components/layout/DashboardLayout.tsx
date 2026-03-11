@@ -10,7 +10,8 @@ import {
     Menu,
     X,
     Bell,
-    Search
+    Search,
+    MessageSquare
 } from 'lucide-react';
 import { useState } from 'react';
 import Link from 'next/link';
@@ -18,9 +19,10 @@ import { usePathname, useRouter } from 'next/navigation';
 import AuthGuard from '@/components/auth/AuthGuard';
 
 const menuItems = [
-    { icon: LayoutDashboard, label: 'Dashboard', href: '/dashboard' },
+    { icon: LayoutDashboard, label: 'Dashboard', href: '/dashboard', exact: true },
     { icon: Users, label: 'Clientes', href: '/dashboard/customers' },
     { icon: CreditCard, label: 'Deudas', href: '/dashboard/debts' },
+    { icon: MessageSquare, label: 'Recordatorios', href: '/dashboard/reminders' },
     { icon: Settings, label: 'Configuración', href: '/dashboard/settings' },
 ];
 
@@ -65,8 +67,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                                 href={item.href}
                                 className={`
                   flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-all
-                  ${pathname === item.href
-                                        ? 'bg-primary/10 text-primary'
+                  ${(item.exact ? pathname === item.href : pathname.startsWith(item.href))
+                                        ? 'bg-primary/10 text-primary font-semibold'
                                         : 'text-muted-foreground hover:bg-muted hover:text-foreground'}
                 `}
                                 onClick={() => setIsSidebarOpen(false)}

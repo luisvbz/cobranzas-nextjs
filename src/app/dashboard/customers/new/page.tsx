@@ -6,7 +6,7 @@ import * as z from 'zod';
 import { useRouter } from 'next/navigation';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '@/lib/api';
-import { Loader2, ArrowLeft, Save } from 'lucide-react';
+import { Loader2, ArrowLeft, Save, Mail, Phone, FileText, User } from 'lucide-react';
 import Link from 'next/link';
 
 const customerSchema = z.object({
@@ -19,6 +19,34 @@ const customerSchema = z.object({
 });
 
 type CustomerFormValues = z.infer<typeof customerSchema>;
+
+function Field({
+    label,
+    icon: Icon,
+    required,
+    error,
+    children,
+    colSpan,
+}: {
+    label: string;
+    icon?: React.ComponentType<{ className?: string }>;
+    required?: boolean;
+    error?: string;
+    children: React.ReactNode;
+    colSpan?: 'full';
+}) {
+    return (
+        <div className={`space-y-2 ${colSpan === 'full' ? 'md:col-span-2' : ''}`}>
+            <label className="text-sm font-semibold flex items-center gap-1.5">
+                {Icon && <Icon className="h-4 w-4 text-primary" />}
+                {label}
+                {required && <span className="text-destructive">*</span>}
+            </label>
+            {children}
+            {error && <p className="text-xs text-destructive">{error}</p>}
+        </div>
+    );
+}
 
 export default function NewCustomerPage() {
     const router = useRouter();
@@ -52,106 +80,100 @@ export default function NewCustomerPage() {
         },
     });
 
-    const onSubmit = (data: CustomerFormValues) => {
-        createCustomer(data);
-    };
+    const inputClass = (hasError?: boolean) =>
+        `flex h-10 w-full rounded-xl border bg-transparent px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary transition-colors ${hasError ? 'border-destructive focus-visible:ring-destructive' : 'border-input'}`;
 
     return (
-        <div className="space-y-6 max-w-3xl mx-auto">
+        <div className="space-y-6 max-w-3xl mx-auto pb-10">
             <div>
                 <Link href="/dashboard/customers" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary mb-4 transition-colors">
                     <ArrowLeft className="h-4 w-4" />
                     Volver a Clientes
                 </Link>
-                <h1 className="font-heading text-3xl font-bold text-foreground">
-                    Nuevo Cliente
-                </h1>
+                <h1 className="font-heading text-3xl font-bold text-foreground">Nuevo Cliente</h1>
                 <p className="text-muted-foreground mt-1 text-sm">
-                    Registra la información de contacto y facturación.
+                    Registra la información de contacto y facturación del cliente.
                 </p>
             </div>
 
             <div className="rounded-2xl border bg-card shadow-sm overflow-hidden">
-                <form onSubmit={handleSubmit(onSubmit)} className="p-6 md:p-8 space-y-8">
-                    <div className="space-y-4">
-                        <h3 className="font-bold border-b pb-2 cursor-default">Información Principal</h3>
+                <form onSubmit={handleSubmit(data => createCustomer(data))} className="divide-y">
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div className="space-y-2 md:col-span-2">
-                                <label className="text-sm font-medium">Nombre Completo o Empresa <span className="text-destructive">*</span></label>
+                    {/* Section: Personal Info */}
+                    <div className="p-6 md:p-8 space-y-4">
+                        <div className="flex items-center gap-2 mb-5">
+                            <User className="h-4 w-4 text-primary" />
+                            <h3 className="font-bold text-sm uppercase tracking-wide text-muted-foreground">Información Principal</h3>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            <Field label="Nombre Completo o Empresa" icon={User} required error={errors.name?.message} colSpan="full">
                                 <input
                                     {...register('name')}
-                                    className={`flex h-10 w-full rounded-xl border bg-transparent px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${errors.name ? 'border-destructive focus-visible:ring-destructive' : 'border-input'}`}
-                                    placeholder="Ej. Juan Pérez"
+                                    className={inputClass(!!errors.name)}
+                                    placeholder="Ej. Juan Pérez o Empresa S.A."
                                 />
-                                {errors.name && <p className="text-sm text-destructive">{errors.name.message}</p>}
-                            </div>
-
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium">Correo Electrónico</label>
+                            </Field>
+                            <Field label="Correo Electrónico" icon={Mail} error={errors.email?.message}>
                                 <input
                                     {...register('email')}
                                     type="email"
-                                    className={`flex h-10 w-full rounded-xl border bg-transparent px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${errors.email ? 'border-destructive focus-visible:ring-destructive' : 'border-input'}`}
-                                    placeholder="ejemplo@correo.com"
+                                    className={inputClass(!!errors.email)}
+                                    placeholder="correo@ejemplo.com"
                                 />
-                                {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
-                            </div>
-
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium">Teléfono</label>
+                            </Field>
+                            <Field label="Teléfono / WhatsApp" icon={Phone}>
                                 <input
                                     {...register('phone')}
                                     type="tel"
-                                    className="flex h-10 w-full rounded-xl border border-input bg-transparent px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-                                    placeholder="+1 234 567 890"
+                                    className={inputClass()}
+                                    placeholder="+51 987 654 321"
                                 />
-                            </div>
+                            </Field>
                         </div>
                     </div>
 
-                    <div className="space-y-4 pt-4">
-                        <h3 className="font-bold border-b pb-2 cursor-default">Identidad y Facturación</h3>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium">Tipo de Documento</label>
+                    {/* Section: Identity */}
+                    <div className="p-6 md:p-8 space-y-4">
+                        <div className="flex items-center gap-2 mb-5">
+                            <FileText className="h-4 w-4 text-primary" />
+                            <h3 className="font-bold text-sm uppercase tracking-wide text-muted-foreground">Identidad y Facturación</h3>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            <Field label="Tipo de Documento">
                                 <select
                                     {...register('document_type')}
-                                    className="flex h-10 w-full rounded-xl border border-input bg-transparent px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                                    className={inputClass()}
                                 >
                                     <option value="DNI">DNI</option>
                                     <option value="RUC">RUC</option>
                                     <option value="Pasaporte">Pasaporte</option>
+                                    <option value="CE">Carné de Extranjería</option>
                                     <option value="Otro">Otro</option>
                                 </select>
-                            </div>
-
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium">Número de Documento</label>
+                            </Field>
+                            <Field label="Número de Documento">
                                 <input
                                     {...register('document_number')}
-                                    className="flex h-10 w-full rounded-xl border border-input bg-transparent px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                                    className={inputClass()}
                                     placeholder="Número de identidad"
                                 />
-                            </div>
-
-                            <div className="space-y-2 md:col-span-2">
-                                <label className="text-sm font-medium">Notas o Dirección (Opcional)</label>
+                            </Field>
+                            <Field label="Notas o Dirección" colSpan="full">
                                 <textarea
                                     {...register('notes')}
                                     rows={3}
-                                    className="flex w-full rounded-xl border border-input bg-transparent px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary resize-none"
-                                    placeholder="Información adicional..."
+                                    className="flex w-full rounded-xl border border-input bg-transparent px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary resize-none transition-colors"
+                                    placeholder="Información adicional, dirección, referencias..."
                                 />
-                            </div>
+                            </Field>
                         </div>
                     </div>
 
-                    <div className="flex justify-end gap-3 pt-6 border-t">
+                    {/* Footer */}
+                    <div className="flex justify-end gap-3 px-6 md:px-8 py-5 bg-muted/20">
                         <Link
                             href="/dashboard/customers"
-                            className="inline-flex h-10 items-center justify-center rounded-xl border bg-transparent px-6 font-medium transition-colors hover:bg-muted"
+                            className="inline-flex h-10 items-center justify-center rounded-xl border bg-card px-6 font-medium transition-colors hover:bg-muted"
                         >
                             Cancelar
                         </Link>

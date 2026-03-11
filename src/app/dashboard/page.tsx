@@ -127,9 +127,9 @@ export default function DashboardHome() {
                     <p className="text-muted-foreground mb-4 max-w-sm text-sm">
                         Registra rápidamente nuevos compromisos de pago para tus clientes y envía recordatorios.
                     </p>
-                    <button className="inline-flex items-center justify-center gap-2 rounded-xl bg-secondary px-6 py-3 text-sm font-bold text-secondary-foreground shadow-lg shadow-secondary/20 transition-all hover:bg-secondary/90">
+                    <Link href="/dashboard/debts/new" className="inline-flex items-center justify-center gap-2 rounded-xl bg-secondary px-6 py-3 text-sm font-bold text-secondary-foreground shadow-lg shadow-secondary/20 transition-all hover:bg-secondary/90">
                         Crear Deuda
-                    </button>
+                    </Link>
                 </div>
             </div>
         </div>
